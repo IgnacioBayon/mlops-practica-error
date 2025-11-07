@@ -1,24 +1,24 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: 
+  name: mlops-web-sinerror-deployment
   labels:
-    app: 
+    app: mlops-web-sinerror
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: 
+      app: mlops-web-sinerror
   template:
     metadata:
       labels:
-        app: 
+        app: mlops-web-sinerror
     spec:
       containers:
-      - name: 
-        image: gcr.io/icai2025/xxx:latest 
-        ports:
-        - containerPort: 8501
-        env:
-        - name: API_URL
-          value: http://mlops-api-service:5000/predict 
+        - name: mlops-web-sinerror
+          image: gcr.io/icai-im/mlops-web-sinerror:latest  # imagen del contenedor web
+          ports:
+          - containerPort: 8501
+          env:
+          - name: API_URL
+            value: http://mlops-api-sinerror-service:5000/predict 

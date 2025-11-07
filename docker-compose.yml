@@ -1,18 +1,22 @@
 services:
-  mlops-api:
-    image: 
-    container_name:
+  mlops-api-sinerror:
+    # usuario/imagen:tag
+    image: ignaciobayon/mlops-api-sinerror:latest
+    container_name: mlops-api-sinerror
     ports:
-      - 
+      # Map host port (6000) to container port (5000) - Put between "{}"
+      - "6000:5000"
+      # El puerto 6000 es para acceder fuera de la red, pero dentro de la red accedes con el puerto 5000
     restart: always
 
-  mlops-web:
-    image:
-    container_name:
+  mlops-web-sinerror:
+    image: ignaciobayon/mlops-web-sinerror:latest
+    container_name: mlops-web-sinerror
     ports:
-      - 
+      - "8080:8501"
     environment:
-      - API_URL=
+      # Como estamos dentro de la red de docker, tengo que usar el puerto interno 5000
+      - API_URL=http://mlops-api-sinerror:5000/predict
     depends_on:
-      - mlops-api
+      - mlops-api-sinerror
     restart: always
