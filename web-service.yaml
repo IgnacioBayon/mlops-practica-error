@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: mlops-web-sinerror-jservice
+  name: mlops-web-sinerror-service
 spec:
   selector:
     app: mlops-web-sinerror
