@@ -1,9 +1,16 @@
 name: MLOps GKE
-on: [push, pull_request]
+# on: [push, pull_request]
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:  # Permite ejecutar el workflow manualmente desde la interfaz de GitHub.
 
 jobs:
   deploy-to-gke:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -11,29 +18,35 @@ jobs:
         uses: actions/setup-python@v4
         with:
           python-version: '3.11'
+
       - id: 'auth'
         name: Authenticate to Google Cloud
         uses: 'google-github-actions/auth@v2'
         with:
-          credentials_json: 
+          credentials_json:  '${{ secrets.GCP_SA_KEY }}'  # Coge las credenciales de los secretos del repositorio.
+
       - name: Set up gcloud CLI and kubectl
         uses: 'google-github-actions/setup-gcloud@v20'
         with:
           version: 'latest'
           install_components: 'gke-gcloud-auth-plugin'
+
       - name: Get GKE credentials
-        run: gcloud container clusters get-credentials ${{  }} --zone ${{  }} --project ${{  }}
+        run: gcloud container clusters get-credentials ${{ vars.GKE_CLUSTER }} --zone ${{ vars.GKE_ZONE }} --project ${{ vars.GKE_PROJECT_ID }}
+
       - name: Configure Docker to use GCR
         run: gcloud auth configure-docker
 
       - name: Build and Push API Docker Image
         run: |
-          docker build -t gcr.io/${{ xxxxx }}/xxxxxx:latest .
-          docker push gcr.io/${{ xxxxx }}/xxxxxx:latest
+          docker build -t gcr.io/${{ vars.GCP_PROJECT_ID }}/mlops-api-sinerror:latest .
+          docker push gcr.io/${{ vars.GCP_PROJECT_ID }}/mlops-api-sinerror:latest
+
       - name: Build and Push Web Docker Image
         run: |
-          docker build -t gcr.io/${{ xxxxx }}/xxxxxx:latest -f Dockerfile.web .
-          docker push gcr.io/${{ xxxxx }}/xxxxxx:latest
+          docker build -t gcr.io/${{ vars.GCP_PROJECT_ID }}/mlops-web-sinerror:latest -f Dockerfile.web .
+          docker push gcr.io/${{ vars.GCP_PROJECT_ID }}/mlops-web-sinerror:latest
+
       - name: Deploy to GKE
         run: |
           
