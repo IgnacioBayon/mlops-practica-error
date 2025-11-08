@@ -9,4 +9,4 @@ spec:
     - protocol: TCP
       port: 80
       targetPort: 8501
-  type: LoadBalancer  # A diferencia de ClusterIP
+  type: LoadBalancer  # A diferencia de ClusterIP que solo es accesible dentro del clúster, LoadBalancer expone el servicio externamente.
